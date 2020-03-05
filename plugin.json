@@ -1,0 +1,12 @@
+{
+    "ID":"6f003b44-5ef8-11ea-8cc4-1c1b0d3d430d",
+    "ActionKeyword":"bd",
+    "Name":"Bing Dictionary",
+    "Description":"Lookup word at cn.bing.com/dict",
+    "Author":"qnnnnez",
+    "Version":"0.1",
+    "Language":"python",
+    "Website":"",
+    "IcoPath":"Images\\app.png",
+    "ExecuteFileName":"main.py"
+}

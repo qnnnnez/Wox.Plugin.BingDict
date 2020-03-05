@@ -1,0 +1,36 @@
+from wox import Wox
+import requests
+import html5lib
+
+
+def lookup_bing_dict(word: str) -> str:
+    url_template = 'https://cn.bing.com/dict/search?q={keyword}'
+    url = url_template.format(keyword=word)
+    r = requests.get(url)
+    html = r.text
+    doc = html5lib.parse(html, namespaceHTMLElements=False)
+    desc = doc.find('.//meta[@name="description"]').attrib['content']
+    excepted_start = '必应词典为您提供{}的释义，'.format(word)
+    if desc.startswith(excepted_start):
+        desc = desc[len(excepted_start):]
+    return desc
+
+
+class BingDict(Wox):
+    def query(self, query: str):
+        results = []
+        query = query.strip()
+        if not query:
+            return results
+
+        results.append({
+            "Title": "BingDict Desc For \"{}\"".format(query),
+            "SubTitle": lookup_bing_dict(query),
+            "IcoPath":"Images/app.ico",
+            "ContextData": "ctxData"
+        })
+        return results
+
+
+if __name__ == "__main__":
+    BingDict()
