@@ -6,6 +6,8 @@ import ctypes
 
 # from https://stackoverflow.com/a/23285159
 CF_TEXT = 1
+CF_UNICODETEXT = 13
+CF_LOCALE = 16
 
 kernel32 = ctypes.windll.kernel32
 kernel32.GlobalLock.argtypes = [ctypes.c_void_p]
@@ -17,13 +19,13 @@ user32.GetClipboardData.restype = ctypes.c_void_p
 def get_clipboard_text():
     user32.OpenClipboard(0)
     try:
-        if user32.IsClipboardFormatAvailable(CF_TEXT):
-            data = user32.GetClipboardData(CF_TEXT)
+        if user32.IsClipboardFormatAvailable(CF_UNICODETEXT):
+            data = user32.GetClipboardData(CF_UNICODETEXT)
             data_locked = kernel32.GlobalLock(data)
             text = ctypes.c_char_p(data_locked)
             value = text.value
             kernel32.GlobalUnlock(data_locked)
-            return value
+            return value.decode('utf-16')
     finally:
         user32.CloseClipboard()
 
@@ -46,7 +48,7 @@ class BingDict(Wox):
         results = []
         query = query.strip()
         if not query:
-            query = get_clipboard_text().decode().strip()
+            query = get_clipboard_text().strip()
 
         results.append({
             "Title": "BingDict Desc For \"{}\"".format(query),
